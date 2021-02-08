@@ -4,9 +4,11 @@ const searchSong = () => {
     fetch(url)
         .then(res => res.json())
         .then(data => displaySong(data.data))
+        .catch(error => displayError('Result Not Found! Please Try Again Letter!'));
 }
 const displaySong = songs => {
     const listContainer = document.getElementById('list-container');
+    listContainer.innerHTML = '';
     songs.forEach(song => {
         console.log(song)
         const div = document.createElement('div');
@@ -28,6 +30,26 @@ const displaySong = songs => {
         listContainer.appendChild(div);
     });
 }
-const getLyrics = (artist, songTitle) => {
-    console.log(artist,songTitle);
+const getLyrics = async (artist, songTitle) => {
+    const url = `https://api.lyrics.ovh/v1/${artist}/${songTitle}`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        displayLyrics(data.lyrics);
+    }
+    catch{
+        displayError('Sorry! Failed To Load Lyrics!!');
+    }
+
+}
+const displayLyrics = lyrics => {
+    const singleLyrics = document.getElementById('singleLyrics');
+    singleLyrics.innerText = '';
+    singleLyrics.innerText = lyrics;
+
+}
+const displayError = error => {
+    const errorTag = document.getElementById('display-error');
+    errorTag.innerText = error;
 }
